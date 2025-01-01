@@ -34,13 +34,22 @@ end)
 
 -- Function to check if player is in the blip zone
 Citizen.CreateThread(function()
+    local blipZone = nil
     while true do
         Citizen.Wait(1000) -- Check every second
-        local playerPed = PlayerPedId()
-        local playerCoords = GetEntityCoords(playerPed)
-        local distance = #(playerCoords - vector3(blipZone.x, blipZone.y, blipZone.z))
+        if blipZone then
+            local playerPed = PlayerPedId()
+            local playerCoords = GetEntityCoords(playerPed)
+            local distance = #(playerCoords - vector3(blipZone.x, blipZone.y, blipZone.z))
 
-        -- Trigger server event to check if player is in the zone
-        TriggerServerEvent('pekehoras:checkPlayerZone', distance <= blipZone.radius)
+            -- Trigger server event to check if player is in the zone
+            TriggerServerEvent('pekehoras:checkPlayerZone', distance <= blipZone.radius)
+        end
     end
+end)
+
+-- Listen for the server event to update the blip zone
+RegisterNetEvent('pekehoras:updateBlipZone')
+AddEventHandler('pekehoras:updateBlipZone', function(zone)
+    blipZone = zone
 end)

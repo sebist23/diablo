@@ -9,6 +9,9 @@ local requiredPlaytime = 3600 -- 1 hour in seconds
 
 -- Initialize oxmysql
 local MySQL = exports.oxmysql
+if not MySQL then
+    print("Error: oxmysql not initialized correctly.")
+end
 
 -- Create a blip visible to all players
 AddEventHandler('onResourceStart', function(resourceName)
@@ -46,7 +49,13 @@ function savePlaytimeToDatabase(playerId)
     if xPlayer then
         local identifier = xPlayer.getIdentifier()
         local playtime = playerPlaytime[playerId] or 0
-        MySQL.update('INSERT INTO player_playtime (identifier, playtime) VALUES (?, ?) ON DUPLICATE KEY UPDATE playtime = playtime + ?', {identifier, playtime, playtime})
+        MySQL.update('INSERT INTO player_playtime (identifier, playtime) VALUES (?, ?) ON DUPLICATE KEY UPDATE playtime = playtime + ?', {identifier, playtime, playtime}, function(affectedRows)
+            if affectedRows > 0 then
+                print("Playtime updated for player: " .. identifier)
+            else
+                print("Failed to update playtime for player: " .. identifier)
+            end
+        end)
     end
 end
 
@@ -71,5 +80,7 @@ function sendPlayerToJail(playerId)
         Citizen.Wait(jailTime * 1000)
         xPlayer.setCoords(vector3(200, 200, 20)) -- Release location
         TriggerClientEvent('pekehoras:notify', playerId, 'You have been released from jail.')
+    else
+        print("Error: Player not found for jailing.")
     end
 end
