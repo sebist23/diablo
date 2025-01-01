@@ -13,7 +13,7 @@ local MySQL = exports.oxmysql
 -- Create a blip visible to all players
 AddEventHandler('onResourceStart', function(resourceName)
     if GetCurrentResourceName() == resourceName then
-        TriggerClientEvent('diablo:createBlip', -1, blipZone)
+        TriggerClientEvent('pekehoras:createBlip', -1, blipZone)
     end
 end)
 
@@ -51,8 +51,8 @@ function savePlaytimeToDatabase(playerId)
 end
 
 -- Check if player leaves the blip zone
-RegisterServerEvent('diablo:checkPlayerZone')
-AddEventHandler('diablo:checkPlayerZone', function(isInZone)
+RegisterServerEvent('pekehoras:checkPlayerZone')
+AddEventHandler('pekehoras:checkPlayerZone', function(isInZone)
     local playerId = source
     if not isInZone then
         local playtime = playerPlaytime[playerId] or 0
@@ -67,9 +67,9 @@ function sendPlayerToJail(playerId)
     local xPlayer = ESX.GetPlayerFromId(playerId)
     if xPlayer then
         xPlayer.setCoords(vector3(0, 0, 0)) -- Example jail location
-        TriggerClientEvent('diablo:notify', playerId, 'You have been jailed for not playing enough time.')
+        TriggerClientEvent('pekehoras:notify', playerId, 'You have been jailed for not playing enough time.')
         Citizen.Wait(jailTime * 1000)
         xPlayer.setCoords(vector3(200, 200, 20)) -- Release location
-        TriggerClientEvent('diablo:notify', playerId, 'You have been released from jail.')
+        TriggerClientEvent('pekehoras:notify', playerId, 'You have been released from jail.')
     end
 end

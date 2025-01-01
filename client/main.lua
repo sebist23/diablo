@@ -3,8 +3,8 @@
 local blip = nil
 
 -- Listen for the server event to create a blip
-RegisterNetEvent('diablo:createBlip')
-AddEventHandler('diablo:createBlip', function(blipZone)
+RegisterNetEvent('pekehoras:createBlip')
+AddEventHandler('pekehoras:createBlip', function(blipZone)
     -- Remove existing blip if it exists
     if blip then
         RemoveBlip(blip)
@@ -41,6 +41,6 @@ Citizen.CreateThread(function()
         local distance = #(playerCoords - vector3(blipZone.x, blipZone.y, blipZone.z))
 
         -- Trigger server event to check if player is in the zone
-        TriggerServerEvent('diablo:checkPlayerZone', distance <= blipZone.radius)
+        TriggerServerEvent('pekehoras:checkPlayerZone', distance <= blipZone.radius)
     end
 end)
